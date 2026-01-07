@@ -1,0 +1,7 @@
+# markdownlint configuration
+MD013:
+  line_length: 180
+  code_blocks: false
+MD041: true
+MD022: true
+MD033: false  # allow inline HTML if needed

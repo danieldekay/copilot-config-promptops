@@ -3,6 +3,8 @@
 
 # Editor folders
 .vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
 .idea/
 
 # Python

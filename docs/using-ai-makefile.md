@@ -33,6 +33,7 @@ On success, the Makefile will create (or update) `.github/copilot-instructions.m
 - AI_SKILLS — list of skill directories to copy under `.github/skills/`
 
 Notes:
+
 - Order matters for `AI_INSTRUCTION_MODULES` — earlier modules appear first in the generated instructions.
 - Pin `AI_REPO_REF` to a tag (e.g., `v1.2.0`) to avoid surprising changes; update on your schedule.
 

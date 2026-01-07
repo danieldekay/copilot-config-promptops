@@ -1,0 +1,19 @@
+# Copy this file to `.ai-config` in your project and edit the values
+AI_REPO_URL?=git@github.com:my-org/ai-knowledge-hub.git
+AI_REPO_REF?=v1.0.0
+
+# INSTRUCTIONS: modules concatenated into .github/copilot-instructions.md
+# Order matters: Global -> Language -> Framework -> Project-specific
+AI_INSTRUCTION_MODULES = \
+    instructions/global/security.md \
+    instructions/global/git-etiquette.md \
+    instructions/languages/python/pep8.md \
+    instructions/frameworks/django.md
+
+# AGENT: the persona to copy to AGENTS.md
+AI_AGENT_PERSONA = agents/backend-dev.md
+
+# SKILLS: directories to install below .github/skills/
+AI_SKILLS = \
+    skills/git-ops \
+    skills/db-migrations

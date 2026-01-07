@@ -1,0 +1,3 @@
+-- Migration template
+-- Write SQL here following the project's migration conventions
+-- Example: ALTER TABLE users ADD COLUMN last_seen TIMESTAMP WITH TIME ZONE;

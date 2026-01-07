@@ -1,0 +1,10 @@
+prompts:
+  - instructions/languages/python/pep8.md
+providers: [openai:gpt-4]
+tests:
+  - description: "Check list comprehension preference"
+    vars:
+      code: "result =\nfor i in range(10):\n  result.append(i*2)"
+    assert:
+      - type: contains
+        value: "result = [i*2 for i in range(10)]"

@@ -1,0 +1,2 @@
+# Prefer union merge for markdown instruction files to avoid blocking edits
+*.md merge=union

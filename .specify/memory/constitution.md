@@ -71,7 +71,6 @@ Changes to AI context MUST follow a controlled lifecycle with validation gates:
 3. **Review & Validation**: PRs to knowledge repo MUST include:
    - Rationale for change (what hallucination or error is being fixed)
    - Token impact analysis (does this increase context size unacceptably?)
-   - Regression test update (promptfoo configuration in `tests/`)
 4. **Versioned Release**: Knowledge repo MUST use semantic versioning (Git tags like `v1.2.0`)
 5. **Controlled Rollout**: Consumer projects opt-in to new versions by updating `AI_REPO_REF` in their `.ai-config`
 

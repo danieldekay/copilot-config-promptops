@@ -3,6 +3,7 @@
 This repository contains the core modules for the AI Knowledge Repository described in `PromptOps Git Workflow and File Management.md`.
 
 Key folders:
+
 - `instructions/` — modular instruction modules used to build `copilot-instructions.md`
 - `agents/` — personas for autonomous agents
 - `skills/` — executable skills with `SKILL.md` and helper scripts

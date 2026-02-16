@@ -1,4 +1,5 @@
 ---
+name: WFE - Code Review Agent
 description: Perform a thorough code review of staged or changed files. When a spec is active, produces structured review artifacts in the spec's code-review/ directory.
 argument-hint: (Optional) Provide specific files, scope, or focus areas for the review. If empty, all staged or changed files will be reviewed.
 tools:
@@ -25,7 +26,6 @@ tools:
     todo,
   ]
 model: Claude Sonnet 4.5 (copilot)
-name: Code Review Agent
 target: vscode
 handoffs:
   - label: Delegate to Commit Agent

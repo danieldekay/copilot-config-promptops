@@ -1,4 +1,5 @@
 ---
+name: WFE - Code Fix Agent
 description: Automatically fix all issues identified in code review artifacts. Reads findings from code-review.md, code-smells.md, and tech-debt.md, then implements fixes systematically. Updates artifacts to track progress.
 argument-hint: (Optional) Provide specific issue IDs, files, or severity levels to fix. If empty, all critical and major issues will be addressed.
 tools:
@@ -30,7 +31,6 @@ tools:
     todo,
   ]
 model: Claude Sonnet 4.5 (copilot)
-name: Code Fix Agent
 target: vscode
 handoffs:
   - label: Re-run Code Review
@@ -183,8 +183,8 @@ Update all artifact files to reflect the current state:
 ```markdown
 ## Fix Status Update
 
-**Fixed by**: Code Fix Agent  
-**Date**: YYYY-MM-DD  
+**Fixed by**: Code Fix Agent
+**Date**: YYYY-MM-DD
 **Summary**: X critical, Y major, Z code smells fixed. See FIX_UPDATE.md for details.
 
 ### Remaining Issues
@@ -201,8 +201,8 @@ Update all artifact files to reflect the current state:
 ```markdown
 # Code Fix Report
 
-**Date**: YYYY-MM-DD  
-**Agent**: Code Fix Agent  
+**Date**: YYYY-MM-DD
+**Agent**: Code Fix Agent
 **Commit**: (will be filled by commit agent)
 
 ## Summary

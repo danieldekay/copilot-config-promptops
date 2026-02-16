@@ -57,3 +57,5 @@ Use the **Conventional Commits** standard:
 
 - Output the `git commit` commands.
 - Use `git add <files>` followed by `git commit -m "..."`.
+- if the user wants to include all changes in a single commit, use `git add .` before the commit command.
+- If multiple commits are needed, output separate `git add` and `git commit` commands for each logical change.

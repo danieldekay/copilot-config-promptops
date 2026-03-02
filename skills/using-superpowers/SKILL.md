@@ -22,10 +22,14 @@ This is not negotiable. This is not optional. You cannot rationalize your way ou
 ## The Rule
 
 **Check for skills BEFORE ANY RESPONSE.** This includes clarifying questions. Even 1% chance means invoke the Skill tool first.
+**Invoke relevant or requested skills BEFORE any response or action.** Even a 1% chance a skill might apply means that you should invoke the skill to check. If an invoked skill turns out to be wrong for the situation, you don't need to use it.
 
 ```dot
 digraph skill_flow {
     "User message received" [shape=doublecircle];
+    "About to EnterPlanMode?" [shape=doublecircle];
+    "Already brainstormed?" [shape=diamond];
+    "Invoke brainstorming skill" [shape=box];
     "Might any skill apply?" [shape=diamond];
     "Invoke Skill tool" [shape=box];
     "Announce: 'Using [skill] to [purpose]'" [shape=box];
@@ -33,6 +37,11 @@ digraph skill_flow {
     "Create TodoWrite todo per item" [shape=box];
     "Follow skill exactly" [shape=box];
     "Respond (including clarifications)" [shape=doublecircle];
+
+    "About to EnterPlanMode?" -> "Already brainstormed?";
+    "Already brainstormed?" -> "Invoke brainstorming skill" [label="no"];
+    "Already brainstormed?" -> "Might any skill apply?" [label="yes"];
+    "Invoke brainstorming skill" -> "Might any skill apply?";
 
     "User message received" -> "Might any skill apply?";
     "Might any skill apply?" -> "Invoke Skill tool" [label="yes, even 1%"];
@@ -62,6 +71,7 @@ These thoughts mean STOP—you're rationalizing:
 | "The skill is overkill" | Simple things become complex. Use it. |
 | "I'll just do this one thing first" | Check BEFORE doing anything. |
 | "This feels productive" | Undisciplined action wastes time. Skills prevent this. |
+| "I know what that means" | Knowing the concept ≠ using the skill. Invoke it. |
 
 ## Skill Priority
 

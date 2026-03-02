@@ -106,6 +106,149 @@ This directory contains agent definitions for automated code quality and version
 [Invoke commit agent with file paths]
 ```
 
+### 4. Codebase Audit Agent (`codebase-audit.agent.md`)
+
+**Purpose**: Orchestrate a comprehensive codebase audit using five specialized subagents.
+
+**Features**:
+
+- Analyzes all source files for structure, patterns, complexity, and quality
+- Updates documentation, docstrings, and type annotations
+- Generates architecture documentation in `docs/understanding/`
+- Produces improvement proposals (refactorings, improvements S/M/L, upside potentials)
+- Assesses codebase against 2026 modern patterns and standards
+
+**Subagents**:
+
+- **Codebase Analyze** (`codebase-analyze.agent.md`) — Per-file structural analysis (read-only)
+- **Codebase Doc Updater** (`codebase-doc-updater.agent.md`) — Updates docblocks and type hints
+- **Codebase Architecture Docs** (`codebase-arch-docs.agent.md`) — Generates architecture documentation
+- **Codebase Proposals** (`codebase-proposals.agent.md`) — Refactoring and improvement proposals
+- **Codebase Modern Patterns** (`codebase-modern-patterns.agent.md`) — 2026 standards assessment
+
+**Artifacts created** (in `docs/understanding/`):
+
+- `AUDIT_REPORT.md` — Executive summary and statistics
+- `architecture.md` — System architecture overview
+- `patterns.md` — Design patterns catalog
+- `dependencies.md` — Dependency graph
+- `data-flow.md` — Key data flows
+- `conventions.md` — Coding conventions
+- `proposals.md` — Prioritized improvement roadmap
+- `modern-patterns.md` — 2026 standards gap analysis
+- `components/*.md` — Component deep dives
+
+**Usage**:
+
+```bash
+# Full codebase audit
+[Invoke codebase-audit agent]
+
+# Audit a specific directory
+[Invoke codebase-audit agent with "src/Services"]
+
+# Audit a specific file
+[Invoke codebase-audit agent with "src/Core.php"]
+
+# Skip documentation updates (analysis + proposals only)
+[Invoke codebase-audit agent with "--skip-docs-update"]
+
+# Proposals only (reuse existing analysis)
+[Invoke codebase-audit agent with "--proposals-only"]
+```
+
+**Handoffs**:
+
+- → **Code Fix Agent**: Implement quick wins from proposals
+- → **Commit Agent**: Commit documentation and type annotation updates
+
+### 5. Engineering Manager Agent (`engineering-manager.agent.md`)
+
+**Purpose**: Orchestrate bug fixes and feature work **outside** the spec-kit flow.
+
+**Features**:
+
+- Routes requests into practical modes: Fix, Feature, Review, Audit, Ship
+- Delegates to specialized agents instead of monolithic flows
+- Uses Codebase Analyze + Proposals to reduce risk before implementing new features
+- Keeps execution lightweight: no required `spec.md` / `plan.md` / `tasks.md`
+- Supports finalization via Commit Agent after verification
+
+**Subagents used**: Code Review, Code Fix, Codebase Analyze, Codebase Proposals, Codebase Audit, Commit Agent.
+
+### 6. Codebase Cartographer (`codebase-cartographer.agent.md`)
+
+**Purpose**: Explore and document an existing codebase (GitHub or local) into structured `understanding/` documents.
+
+**Subagents** (3-phase pipeline):
+
+| Phase | Agent | What it does |
+|-------|-------|--------------|
+| 1 — Scan | `codebase-cartographer.scan` | Structure, tech stack, key files, health signals |
+| 2 — Analyze | `codebase-cartographer.analyze` | Architecture patterns, domain model, code quality |
+| 3 — Map | `codebase-cartographer.map` | Synthesizes into 6 understanding documents |
+
+**Artifacts created** (in `understanding/`):
+
+- `OVERVIEW.md` — Executive summary
+- `architecture.md` — System architecture
+- `domain-model.md` — Core entities and relationships
+- `tech-stack.md` — Technology inventory
+- `conventions.md` — Code conventions and patterns
+- `entry-points.md` — Key files and navigation guide
+
+### 7. Deep Research Pipeline (`deep-researcher.agent.md`)
+
+**Purpose**: 5-tier research pipeline from broad data collection to structured synthesis.
+
+**Subagents** (5 tiers + utility):
+
+| Tier | Agent | What it does |
+|------|-------|--------------|
+| 1 — Gather | `deep-research.gather` | Broad data collection: 7–10 varied queries across web, bookmarks, internal |
+| 2 — Process | `deep-research.process` | Triage and classify sources into 5 quality tiers |
+| 3 — Extract | `deep-research.extract` | Deep reading and structured knowledge extraction |
+| 4 — Evaluate | `deep-research.evaluate` | Cross-reference, triangulate, assign confidence scores |
+| 5 — Synthesize | `deep-research.synthesize` | Transform evidence into knowledge artifacts |
+| Utility | `deep-research.bookmark` | Archive sources to Raindrop.io |
+
+### 8. Spec-Kit Extended Agents
+
+In addition to the core spec-kit workflow (orchestrator, specify, clarify, plan, tasks, implement, review, analyze, checklist, constitution), the following agents provide lifecycle integration:
+
+| Agent | Purpose |
+|-------|---------|
+| `speckit.agent.md` | Full 9-stage lifecycle orchestrator (proactive state detection) |
+| `speckit.quality-gate.agent.md` | 7-check automated gate: format, lint, type, test, coverage, security, architecture |
+| `speckit.autofix.agent.md` | Bounded auto-fix of quality gate failures (max 3 iterations) |
+| `speckit.commit.agent.md` | Conventional commit with pre-commit verification |
+| `speckit.retro.agent.md` | Retrospective: capture lessons, propose improvements |
+
+### 9. Knowledge Management Agents
+
+| Agent | Purpose |
+|-------|---------|
+| `literature-reviewer.agent.md` | Academic literature review using Pacheco-Vega AIC method |
+| `zk.agent.md` | Zettelkasten note management (MCP-backed) |
+| `zk-orchestrator.agent.md` | Routes knowledge work to workflows, lifecycle management |
+
+### 10. Standalone Agents
+
+| Agent | Purpose |
+|-------|---------|
+| `prompt-builder.agent.md` | Dual-persona prompt engineering (Builder + Tester) |
+| `prompt-engineer.agent.md` | Prompt analysis against OpenAI best practices |
+| `wg-code-alchemist.agent.md` | JARVIS-inspired Clean Code refactoring |
+| `janitor.agent.md` | Tech debt elimination (deletion-first) |
+| `r-datascientist.agent.md` | R + Tufte-quality data analysis |
+| `research-technical-spike.agent.md` | Technical spike research and documentation |
+| `plan.agent.md` | General planning agent |
+| `prd.agent.md` | Product requirements document generation |
+| `planner.agent.md` | Lightweight planning |
+| `playwright-tester.agent.md` | Playwright test authoring |
+
+---
+
 ## Integrated Workflow
 
 The three agents work together in a coordinated workflow:
@@ -194,6 +337,7 @@ The agents use filesystem artifacts to coordinate:
 
 | File                  | Purpose              | Created By  | Used By          |
 | --------------------- | -------------------- | ----------- | ---------------- |
+|-----------------------|----------------------|-------------|------------------|
 | `code-review.md`      | Review findings      | Code Review | Commit, Code Fix |
 | `FIX_UPDATE.md`       | Fix status tracker   | Code Fix    | Commit           |
 | `code-smells.md`      | Code smell inventory | Code Review | Code Fix         |
@@ -305,6 +449,26 @@ handoffs: [list of handoff options to other agents]
 | Want detailed review without committing | Code Review Agent                    |
 | Have review artifacts, need fixes       | Code Fix Agent                       |
 | Committing after manual fixes           | Commit Agent (it detects fixes)      |
+| Scenario                                    | Agent to Invoke                      |
+|---------------------------------------------|--------------------------------------|
+| Just want to commit changes quickly         | Commit Agent (it handles everything) |
+| Want detailed review without committing     | Code Review Agent                    |
+| Have review artifacts, need fixes           | Code Fix Agent                       |
+| Committing after manual fixes               | Commit Agent (it detects fixes)      |
+| Deep codebase analysis + proposals          | Codebase Audit Agent                 |
+| Explore an unfamiliar codebase              | Codebase Cartographer                |
+| Update docs/types for specific files        | Codebase Doc Updater                 |
+| Generate architecture documentation         | Codebase Architecture Docs           |
+| Assess modernization opportunities          | Codebase Modern Patterns             |
+| Fix bugs or build features outside spec-kit | Engineering Manager Agent            |
+| Research a topic with evidence synthesis     | Deep Researcher                      |
+| Full spec-to-commit development lifecycle   | Spec-Kit Orchestrator (speckit.agent)|
+| Run quality gate checks                     | speckit.quality-gate                 |
+| Academic literature review                  | Literature Reviewer                  |
+| Knowledge management (notes)               | Zettelkasten (zk)                    |
+| Build or improve prompts                    | Prompt Builder                       |
+| Refactor code (Clean Code)                  | WG Code Alchemist                    |
+| Eliminate tech debt                         | Janitor                              |
 
 ### Workflow Recommendations
 
@@ -320,6 +484,12 @@ handoffs: [list of handoff options to other agents]
 4. **Iterative workflow**:
    - Invoke Code Review → Invoke Code Fix → Invoke Code Review again (verify) → Invoke Commit
 
+5. **Codebase audit workflow**:
+   - Invoke Codebase Audit → review proposals → implement quick wins → Commit Agent
+
+6. **Targeted audit workflow**:
+   - Invoke Codebase Audit with `src/Services` → review findings → fix manually → Commit Agent
+
 ### Tips
 
 - **Use argument hints**: Pass specific files or scopes to focus agents
@@ -332,21 +502,25 @@ handoffs: [list of handoff options to other agents]
 ### Agent isn't detecting existing review
 
 **Cause**: Review artifacts in unexpected location  
+**Cause**: Review artifacts in unexpected location
 **Fix**: Ensure `.specify/scripts/bash/check-prerequisites.sh` exists and is executable
 
 ### Code Fix Agent skips all issues
 
 **Cause**: Issues may already be fixed or validation failed  
+**Cause**: Issues may already be fixed or validation failed
 **Fix**: Check Verify Fix section of FIX_UPDATE.md for details
 
 ### Commit Agent creates too many commits
 
 **Cause**: Changes span many semantic groups  
+**Cause**: Changes span many semantic groups
 **Fix**: Stage specific files with `git add` before invoking agent
 
 ### Type errors after fixes
 
 **Cause**: Fix introduced type incompatibility  
+**Cause**: Fix introduced type incompatibility
 **Fix**: Code Fix Agent auto-reverts failed fixes — check skipped issues in FIX_UPDATE.md
 
 ## Future Enhancements

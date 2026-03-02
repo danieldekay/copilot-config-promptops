@@ -27,6 +27,8 @@ tools:
     edit/createDirectory,
     edit/createFile,
     edit/editFiles,
+    edit/replaceStringInFile,
+    edit/multiReplaceStringInFile,
     search/changes,
     search/codebase,
     search/fileSearch,

@@ -1,5 +1,6 @@
 ---
 description: 'Reusable prompt for running, analyzing, and fixing tests following Uncle Bob FIRST principles and TangoAtlas standards'
+description: 'Reusable prompt for running, analyzing, and fixing tests following Uncle Bob FIRST principles and Clean Architecture standards'
 version: '1.0.0'
 date: '2026-01-08'
 ---
@@ -9,6 +10,7 @@ date: '2026-01-08'
 ## Context
 
 You WILL analyze and fix test failures in the TangoAtlas project, following Uncle Bob's FIRST principles, Clean Architecture boundaries, and high-quality test standards. You WILL focus on fixing real issues in application code, NOT working around framework behavior or adding superficial fixes.
+You WILL analyze and fix test failures in this project, following Uncle Bob's FIRST principles, Clean Architecture boundaries, and high-quality test standards. You WILL focus on fixing real issues in application code, NOT working around framework behavior or adding superficial fixes.
 
 ## Core Principles
 
@@ -154,6 +156,8 @@ Is database/external service needed to test this?
 # ✅ CORRECT - Pure Python, tests business logic
 from tangoatlas.domain.auth.user import User
 from tangoatlas.domain.auth.value_objects import UserId, Role
+from myproject.domain.auth.user import User
+from myproject.domain.auth.value_objects import UserId, Role
 
 def test_admin_can_approve_submissions() -> None:
     """Admin users can approve any submission."""
@@ -168,6 +172,7 @@ def test_admin_can_approve_submissions() -> None:
 # ❌ WRONG - Django imports in domain test
 from django.test import TestCase  # FORBIDDEN
 from tangoatlas.infrastructure.django.models import UserModel  # FORBIDDEN
+from myproject.infrastructure.django.models import UserModel  # FORBIDDEN
 ```
 
 #### Application Layer Tests (Mocked Dependencies)
@@ -176,6 +181,7 @@ from tangoatlas.infrastructure.django.models import UserModel  # FORBIDDEN
 # ✅ CORRECT - Mocked repository interface
 from unittest.mock import Mock
 from tangoatlas.application.links.submit_link_service import SubmitLinkService
+from myproject.application.links.submit_link_service import SubmitLinkService
 
 def test_submit_link_creates_pending_link(mocker: MockerFixture) -> None:
     """Submitting a link creates pending link via repository."""
@@ -243,6 +249,7 @@ You SHOULD run mutation tests for critical domain logic after unit tests pass:
 ```bash
 # Run mutation tests on specific domain file
 uv run mutmut run --paths-to-mutate=src/tangoatlas/domain/entities/link.py
+uv run mutmut run --paths-to-mutate=src/myproject/domain/entities/link.py
 
 # View results
 uv run mutmut results
@@ -336,6 +343,10 @@ pg_isready -U dekay
 
 # Check test settings loaded
 echo $DJANGO_SETTINGS_MODULE  # Should be tangoatlas.config.settings_test
+pg_isready -U postgres
+
+# Check test settings loaded
+echo $DJANGO_SETTINGS_MODULE  # Should be myproject.config.settings_test
 ```
 
 **Fix**:
@@ -347,6 +358,7 @@ echo $DJANGO_SETTINGS_MODULE  # Should be tangoatlas.config.settings_test
 #### IT-002: Test Database Not Auto-Created
 
 **Symptoms**: `django.db.utils.OperationalError: database "test_tangoatlas" does not exist`
+**Symptoms**: `django.db.utils.OperationalError: database "test_myproject" does not exist`
 
 **Diagnosis**:
 
@@ -361,6 +373,7 @@ grep DJANGO_SETTINGS_MODULE pyproject.toml
 **Fix**:
 
 1. Ensure pyproject.toml has `DJANGO_SETTINGS_MODULE = "tangoatlas.config.settings_test"`
+1. Ensure pyproject.toml has `DJANGO_SETTINGS_MODULE = "myproject.config.settings_test"`
 2. Add `--create-db` flag to pytest command
 3. Verify test user has CREATE DATABASE permission
 
@@ -426,6 +439,7 @@ grep -n "def authenticated_client" tests/integration/conftest.py
 # ANTI-PATTERN: Mocking database in integration test
 @pytest.mark.django_db
 @patch("tangoatlas.infrastructure.django.links.models.LinkModel.objects.create")
+@patch("myproject.infrastructure.django.links.models.LinkModel.objects.create")
 def test_repository_save(mock_create):
     mock_create.return_value = Mock()
     # This is NOT testing real database behavior!
@@ -491,6 +505,7 @@ You WILL verify fixes are complete and proper:
 
    ```bash
    uv run pytest --cov=src/tangoatlas --cov-report=term --cov-report=html
+   uv run pytest --cov=src/myproject --cov-report=term --cov-report=html
    ```
 
 2. **Verify Clean Architecture boundaries**:
@@ -674,6 +689,7 @@ You WILL provide clear, actionable reports:
 
 # Run all tests with coverage
 uv run pytest --cov=src/tangoatlas --cov-report=term --cov-report=html
+uv run pytest --cov=src/myproject --cov-report=term --cov-report=html
 
 # Run specific test types (no coverage enforcement)
 uv run pytest tests/unit/domain/ -v           # Domain tests only
@@ -711,6 +727,7 @@ uv run pyright
 
 # Mutation testing (domain only, slow)
 uv run mutmut run --paths-to-mutate=src/tangoatlas/domain/
+uv run mutmut run --paths-to-mutate=src/myproject/domain/
 uv run mutmut results
 uv run mutmut html
 ```

@@ -26,6 +26,20 @@ tools:
     todo,
   ]
 model: Claude Sonnet 4.5 (copilot)
+    edit/editFiles,
+    edit/replaceStringInFile,
+    edit/multiReplaceStringInFile,
+    search/changes,
+    search/codebase,
+    search/fileSearch,
+    search/listDirectory,
+    search/searchSubagent,
+    search/textSearch,
+    search/usages,
+    todo,
+  ]
+model: Claude Sonnet 4.5 (copilot)
+name: Code Review Agent
 target: vscode
 handoffs:
   - label: Delegate to Commit Agent

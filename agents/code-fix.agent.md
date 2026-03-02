@@ -21,16 +21,20 @@ tools:
     edit/createDirectory,
     edit/createFile,
     edit/editFiles,
+    edit/replaceStringInFile,
+    edit/multiReplaceStringInFile,
     search/changes,
     search/codebase,
     search/fileSearch,
     search/listDirectory,
     search/searchResults,
+    search/searchSubagent,
     search/textSearch,
     search/usages,
     todo,
   ]
 model: Claude Sonnet 4.5 (copilot)
+name: Code Fix Agent
 target: vscode
 handoffs:
   - label: Re-run Code Review
@@ -126,6 +130,8 @@ For each issue in priority order:
 #### 4c. Apply Fix
 
 - Implement the suggested fix (or a better solution if one is evident)
+- **Always use file edit tools** (`editFiles`, `replaceStringInFile`, `multiReplaceStringInFile`, `createFile`) for all file modifications
+- **NEVER use HEREDOC** (`cat << 'EOF'`), `echo "..." >`, or any terminal command to create or edit files — these cause quoting and escaping failures
 - Follow all codebase rules:
   - Maintain strict TypeScript typing (no `any`)
   - Use path aliases (`@/`)

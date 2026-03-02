@@ -62,6 +62,7 @@ wc -l src/Path/To/File.php
 
 | Type         | Soft Limit | Hard Limit | Action at Limit               |
 | ------------ | ---------- | ---------- | ----------------------------- |
+|--------------|------------|------------|-------------------------------|
 | PHP class    | 300 lines  | 400 lines  | Extract trait / split class   |
 | JS component | 200 lines  | 300 lines  | Extract sub-component / hook  |
 | Test file    | 300 lines  | 400 lines  | Split into focused test files |
@@ -113,6 +114,7 @@ If this fix reveals a **recurring pattern** (a class of bugs that could reappear
 
 | Don't                                        | Do Instead                                    |
 | -------------------------------------------- | --------------------------------------------- |
+|----------------------------------------------|-----------------------------------------------|
 | Patch the symptom in one place               | Fix the root cause; check for other instances |
 | Add code to a 500-line file                  | Extract first, then add                       |
 | Skip tests because "it's a simple fix"       | Simple fixes are the easiest to test — do it  |

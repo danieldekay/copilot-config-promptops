@@ -30,7 +30,7 @@ api_key = os.environ.get("API_KEY")
 # ✅ GOOD: Input validation via Serializers
 class UserSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    
+
     def validate_email(self, value):
         if "bad" in value:
             raise serializers.ValidationError("Invalid email")

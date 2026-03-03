@@ -36,6 +36,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 3. **Apply fixes in order**:
 
    **Phase 1 — Automatic fixes** (safe, deterministic):
+
    ```bash
    uv run black src/ tests/         # Auto-format
    uv run ruff check --fix src/ tests/  # Auto-fix lint issues
@@ -85,6 +86,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 | Total runtime | Reasonable | Don't iterate indefinitely on one issue |
 
 **If you cannot fix an issue after 2 attempts**, stop and report clearly:
+
 - What error persists
 - What you tried
 - Suggested alternative approach for the orchestrator/user

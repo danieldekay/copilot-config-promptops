@@ -3,6 +3,12 @@ name: using-superpowers
 description: Use when starting any conversation - establishes how to find and use skills, requiring Skill tool invocation before ANY response including clarifying questions
 ---
 
+<BEFORE>
+- You MUST get the current date and time at the beginning of the conversation using the `time/*` tool. This is essential for timestamping and context.
+- YOU MUST check the time again after completing any significant task, and report the duration taken for that task. This helps with time management and tracking.
+- You MUST announce the use of any skill by stating: "Using [skill name] to [purpose]." Use also EMOJIS to indicate the type of skill (e.g., 🧠 for brainstorming, 🛠️ for debugging, 📚 for research).
+</BEFORE>
+
 <EXTREMELY-IMPORTANT>
 If you think there is even a 1% chance a skill might apply to what you are doing, you ABSOLUTELY MUST invoke the skill.
 

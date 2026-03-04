@@ -1,6 +1,6 @@
 ---
 description: "Codebase Cartographer — Phase 1 Scan: Structure, tech stack, key files, and surface-level signals"
-user-invokable: false
+user-invocable: false
 tools:
   [read/readFile, edit/createFile, edit/editFiles, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, search/searchSubagent, web/fetch, web/githubRepo, terminal, time/get_current_time]
 ---

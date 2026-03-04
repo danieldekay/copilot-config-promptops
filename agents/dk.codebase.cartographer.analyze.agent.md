@@ -1,6 +1,6 @@
 ---
 description: "Codebase Cartographer — Phase 2 Analyze: Deep reading, architecture patterns, code quality, and domain model"
-user-invokable: false
+user-invocable: false
 tools:
   [read/readFile, edit/createFile, edit/editFiles, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, search/searchSubagent, web/fetch, web/githubRepo, terminal, time/get_current_time]
 ---

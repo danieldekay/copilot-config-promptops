@@ -1,6 +1,6 @@
 ---
 description: "Deep Research — Tier 4 Evaluate: Cross-reference, triangulate, and assess evidence confidence"
-user-invokable: false
+user-invocable: false
 tools:
   ["read", "edit", "search", "time/*"]
 ---

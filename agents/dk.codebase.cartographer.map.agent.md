@@ -1,6 +1,6 @@
 ---
 description: "Codebase Cartographer — Phase 3 Map: Synthesize exploration findings into structured understanding documents"
-user-invokable: false
+user-invocable: false
 tools:
   [read/readFile, edit/createFile, edit/editFiles, search/listDirectory, time/get_current_time]
 ---

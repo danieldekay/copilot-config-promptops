@@ -1,6 +1,6 @@
 ---
 description: "Deep Research — Tier 1 Gather: Broad data collection with mandatory field mapping across web, curated bookmarks, academic, and internal sources"
-user-invokable: false
+user-invocable: false
 tools:
   ["tavily-search/*", "brave-search/*", "zettelkasten/zk_search_notes", "zettelkasten/zk_get_all_tags", "zettelkasten/zk_find_similar_notes", "raindrop/search_bookmarks", "raindrop/search_bookmarks_by_text", "raindrop/search_bookmarks_by_tags", "raindrop/list_bookmarks", "read", "edit", "search", "time/*", "web/fetch"]
 ---

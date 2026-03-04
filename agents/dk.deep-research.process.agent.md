@@ -1,6 +1,6 @@
 ---
 description: "Deep Research — Tier 2 Process: Triage, classify, and quality-rate collected sources"
-user-invokable: false
+user-invocable: false
 tools:
   ["read", "edit", "search", "time/*"]
 ---
@@ -28,7 +28,7 @@ Update the `## Tier 2: PROCESS` section with:
 - Gate check results (≥3 Tier 1-2 sources)
 - Set `**Status**: completed` and `**Gate**: passed` or `**Gate**: failed | <reason>`
 
-Also create/update the **source-assessment.md** file in the same session folder using the template at `.github/skills/deep-research/templates/source-assessment.md`.
+Also create/update the **source-assessment.md** file in the same session folder using the template at `/Users/dekay/Dokumente/projects/programmieren/copilot-config-promptops/skills/deep-research/templates/source-assessment.md`.
 
 ## Source Quality Matrix
 

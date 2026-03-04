@@ -1,6 +1,6 @@
 ---
 description: "Deep Research — Tier 5b Diagram: Create draw.io field maps showing concept relationships for complex topics"
-user-invokable: false
+user-invocable: false
 tools:
   ["read", "edit", "search", "time/*"]
 ---

@@ -1,6 +1,6 @@
 ---
 description: "Deep Research — Tier 5 Synthesize: Transform evaluated evidence into structured knowledge artifacts"
-user-invokable: false
+user-invocable: false
 tools:
   ["zettelkasten/*", "read", "edit", "search", "time/*"]
 ---
@@ -32,7 +32,7 @@ Update the `## Tier 5: SYNTHESIZE` section with:
 
 ## Phase 1: Research Brief (ALWAYS)
 
-Create `research-brief.md` in the session folder using the template at `.github/skills/deep-research/templates/research-brief.md`.
+Create `research-brief.md` in the session folder using the template at `/Users/dekay/Dokumente/projects/programmieren/copilot-config-promptops/skills/deep-research/templates/research-brief.md`.
 
 1. Write an executive summary (2-3 sentences capturing the core answer)
 2. List key findings with confidence levels from Tier 4 evaluation
@@ -45,7 +45,7 @@ Create `research-brief.md` in the session folder using the template at `.github/
 
 ## Phase 2: Open Questions Document (ALWAYS)
 
-Create `open-questions.md` in the session folder using the template at `.github/skills/deep-research/templates/open-questions.md`.
+Create `open-questions.md` in the session folder using the template at `/Users/dekay/Dokumente/projects/programmieren/copilot-config-promptops/skills/deep-research/templates/open-questions.md`.
 
 Pull from:
 - Tier 4 gap analysis
@@ -63,7 +63,7 @@ Categorize questions by:
 
 ## Phase 3: Hypotheses Document (ALWAYS)
 
-Create `hypotheses.md` in the session folder using the template at `.github/skills/deep-research/templates/hypotheses.md`.
+Create `hypotheses.md` in the session folder using the template at `/Users/dekay/Dokumente/projects/programmieren/copilot-config-promptops/skills/deep-research/templates/hypotheses.md`.
 
 Pull from:
 - Tier 4 preliminary hypotheses
@@ -80,7 +80,7 @@ For each hypothesis:
 
 ## Phase 4: Further Research Document (ALWAYS)
 
-Create `further-research.md` in the session folder using the template at `.github/skills/deep-research/templates/further-research.md`.
+Create `further-research.md` in the session folder using the template at `/Users/dekay/Dokumente/projects/programmieren/copilot-config-promptops/skills/deep-research/templates/further-research.md`.
 
 Include THREE categories of research questions:
 
@@ -123,7 +123,7 @@ If 5+ permanent notes were created on related subtopics:
 
 ## Phase 7: Synthesis Report (Complex Topics)
 
-For complex, multi-theme topics, also produce `synthesis-report.md` using the template at `.github/skills/deep-research/templates/synthesis-report.md`:
+For complex, multi-theme topics, also produce `synthesis-report.md` using the template at `/Users/dekay/Dokumente/projects/programmieren/copilot-config-promptops/skills/deep-research/templates/synthesis-report.md`:
 - Full evidence chains per theme
 - Complete triangulation matrix
 - Conflict analysis
@@ -162,7 +162,7 @@ When the orchestrator invokes you with `Mode: fact-check`, produce a **fact-chec
 
 ### Primary Output: `fact-check-report.md`
 
-Use the template at `.github/skills/deep-research/templates/fact-check-report.md`.
+Use the template at `/Users/dekay/Dokumente/projects/programmieren/copilot-config-promptops/skills/deep-research/templates/fact-check-report.md`.
 
 **Structure the report as follows:**
 

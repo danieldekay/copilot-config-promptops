@@ -1,6 +1,6 @@
 ---
 description: "Deep Research — Tier 3 Extract: Deep reading and structured knowledge extraction from vetted sources"
-user-invokable: false
+user-invocable: false
 tools:
   ["tavily-search/tavily_extract", "tavily-search/tavily_crawl", "read", "edit", "search", "time/*"]
 ---

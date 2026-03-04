@@ -1,6 +1,5 @@
 ---
 description: "Deep Research — Tier 2 Process: Triage, classify, and quality-rate collected sources"
-author: danieldekay
 user-invokable: false
 tools:
   ["read", "edit", "search", "time/*"]
@@ -57,11 +56,13 @@ Create `source-assessment.md` in the session folder with:
 - Full source register (one entry per retained source)
 - Quality distribution table
 - Relevance distribution table
+- **Dimension coverage table** (which dimensions each source covers)
+- **Academic papers register** — list all papers with downloadable PDFs, flagged for Tier 3b analysis
 - Excluded sources with reasons
 
 ## Quality Gate
 
-**Minimum**: Source Register completed. At least 3 Tier 1-2 sources identified.
+**Minimum**: Source Register completed. At least 3 Tier 1-2 sources identified. All 5 research dimensions have at least 1 retained source (or documented reason why not).
 
 If insufficient high-quality sources exist, set `**Gate**: failed | insufficient Tier 1-2 sources` — the orchestrator may re-invoke Gather with refined queries.
 
@@ -71,3 +72,5 @@ If insufficient high-quality sources exist, set `**Gate**: failed | insufficient
 - Be ruthless with duplicates — keep the higher-quality version
 - Document every keep/drop decision with a reason
 - Bias toward keeping sources when uncertain — Tier 3 will do deep reads
+- **Track which research dimensions each source covers**
+- **Flag all academic papers with PDF URLs** — they go to the PDF analysis subagent in Tier 3b

@@ -1,6 +1,5 @@
 ---
 description: "Deep Research — Tier 3 Extract: Deep reading and structured knowledge extraction from vetted sources"
-author: danieldekay
 user-invokable: false
 tools:
   ["tavily-search/tavily_extract", "tavily-search/tavily_crawl", "read", "edit", "search", "time/*"]
@@ -40,6 +39,8 @@ For each source rated Tier 1, 2, or 3, extract:
 4. **Limitations**: What does the source acknowledge it doesn't cover?
 5. **Connections**: How does this relate to other sources in the register?
 6. **Notable quotes**: Key passages worth preserving (with page/section reference)
+7. **Dimension coverage**: Which mandatory research dimensions does this source address? (field landscape, key people, alternatives, best practices, critical essentials)
+8. **Key people mentioned**: Any researchers, practitioners, or thought leaders referenced
 
 ### Tier 4-5 Sources (Light Extraction)
 
@@ -47,6 +48,7 @@ For each source rated Tier 4 or 5:
 
 1. **Key data points**: Specific facts, statistics, or quotes worth keeping
 2. **Perspective**: What angle does this source add that others don't?
+3. **People mentioned**: Any key figures in the field referenced
 
 ## Deep Content Access
 
@@ -68,6 +70,8 @@ Write extraction notes in the research log under `## Tier 3: READ & UNDERSTAND` 
 - **Limitations acknowledged**: {{what they say they don't cover}}
 - **Connection to other sources**: {{agreements, extensions, contradictions}}
 - **Notable quotes**: {{key passages with references}}
+- **Dimensions covered**: {{field landscape / key people / alternatives / best practices / essentials}}
+- **Key people mentioned**: {{names and affiliations}}
 ```
 
 ## Quality Gate

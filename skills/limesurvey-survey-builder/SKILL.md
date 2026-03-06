@@ -107,8 +107,29 @@ welcome: |                                 # Optional: welcome text
 end_message: |                             # Optional: closing text
   Thank you!
 format: "G"                                # G=group, S=single, A=all (default: G)
+template: "fruity"                        # Optional: LS theme/template name
 show_progress: true                        # default: true
+show_welcome: true                         # default: true
 allow_prev: true                           # default: true
+start_date: "2026-03-06 09:00"           # Optional
+expiry_date: "2026-03-20 18:00"          # Optional
+use_tokens: true                           # Optional
+assessments: true                          # Optional
+bounce_email: "bounce@example.com"       # Optional
+email_response_to: "reply@example.com"   # Optional
+email_notification_to: "notify@example.com" # Optional
+email_invite_subject: "Please join"      # Optional
+email_invite_body: "Invitation body"     # Optional
+email_remind_subject: "Reminder"         # Optional
+email_remind_body: "Reminder body"       # Optional
+email_register_subject: "Registration"   # Optional
+email_register_body: "Registration body" # Optional
+email_confirm_subject: "Confirmed"       # Optional
+email_confirm_body: "Confirmation body"  # Optional
+email_admin_notification_subject: "New response" # Optional
+email_admin_notification_body: "Admin notification body" # Optional
+email_admin_responses_subject: "Responses export" # Optional
+email_admin_responses_body: "Responses body" # Optional
 ---
 ```
 
@@ -124,6 +145,7 @@ Important: this skill documents the **current** markdown→domain→LSS pipeline
 |--------------------|-----------------|--------|-------|
 | `single_choice`    | L               | ✅ Supported | Requires answer options (`- [ ] ...`) |
 | `multiple_choice`  | M               | ✅ Supported | Requires answer options (`- [ ] ...`) |
+| `list_with_comment`| O               | ✅ Supported | Single choice with comment |
 | `dropdown`         | !               | ✅ Supported | Requires answer options (`- [ ] ...`) |
 | `short_text`       | S               | ✅ Supported | No answer options |
 | `long_text`        | T               | ✅ Supported | No answer options |
@@ -131,9 +153,14 @@ Important: this skill documents the **current** markdown→domain→LSS pipeline
 | `numeric`          | N               | ⚠️ Supported (untested) | No answer options |
 | `date`             | D               | ⚠️ Supported (untested) | No answer options |
 | `ranking`          | R               | ⚠️ Supported (untested) | Requires answer options (`- [ ] ...`) |
-| `yes_no`           | Y               | ⚠️ Supported (pipeline-specific) | Current domain validation expects explicit answers; include `- [ ] Ja` / `- [ ] Nein` |
+| `yes_no`           | Y               | ✅ Supported | No explicit answer options needed |
+| `text_display`     | X               | ✅ Supported | Display-only boilerplate text |
+| `equation`         | *               | ✅ Supported | Computed / ExpressionScript-backed field |
+| `array_5point`     | A               | ⚠️ Supported | Use `Rows:` syntax for subquestions |
+| `array_yes_no_uncertain` | C         | ⚠️ Supported | Use `Rows:` syntax for subquestions |
+| `array_dual_scale` | 1               | ⚠️ Declared, not fully documented | Advanced array export path |
 
-Not currently supported by the markdown format (no syntax in the parser): array/matrix questions, subquestions, “other” option, per-option comments, min/max checkbox constraints, randomization.
+Still not currently supported end-to-end: full multi-language authoring in one markdown file, quotas, full LS admin parity.
 
 ---
 
@@ -145,17 +172,41 @@ code: MY_CODE                        # Required: unique, A-Z/0-9/_, starts with 
 required: true                       # Optional: true/false (default: false)
 relevance: "NEWSLETTER_ABO == 'A1'"  # Optional: ExpressionScript condition
 help: "Helper text"                  # Optional
+other_option: true                   # Optional: add LimeSurvey "Other"
+other_replace_text: "Other"         # Optional: label text for Other field
+min_answers: 1                       # Optional: checkbox minimum
+max_answers: 3                       # Optional: checkbox maximum
+randomize_answers: true              # Optional: randomize answer order
+css_class: "survey-question"        # Optional: exported CSS class
+display_type: list                   # Optional: display hint (`default`, `inline`, `table`, `list`)
+hide_tip: true                       # Optional: hide tip/help icon
+validation: '^[^@]+@[^@]+\\.[^@]+$' # Optional: regex validation
+validation_message: "Invalid email" # Optional: shown on validation failure
+min_length: 5                        # Optional: text minimum length
+max_length: 250                      # Optional: text maximum length
+min_value: 0                         # Optional: numeric minimum
+max_value: 100                       # Optional: numeric maximum
 ```
 
-Only these keys are currently consumed by the markdown parser: `type`, `code`, `required`, `relevance`, `help`.
-
-Other keys (e.g. `max_length`, `validation`, `validation_message`, `other_option`, min/max constraints) are currently **ignored** by the markdown pipeline.
+These keys are currently consumed by the markdown parser: `type`, `code`, `required`, `relevance`, `help`, `other_option`, `other_replace_text`, `min_answers`, `max_answers`, `randomize_answers`, `css_class`, `display_type`, `hide_tip`, `validation`, `validation_message`, `min_length`, `max_length`, `min_value`, `max_value`.
 
 ---
 
 ## Answer Codes
 
 Answer options are auto-assigned codes `A1`, `A2`, `A3`... in order of appearance. Use these codes in `relevance` expressions.
+
+You can also set explicit codes and assessment values inline:
+
+```markdown
+- [A1] Newsletter
+- [A2|10] WhatsApp
+- [CUSTOM_CODE|5] Local community
+```
+
+Format:
+- `[CODE] Answer text`
+- `[CODE|ASSESSMENT_VALUE] Answer text`
 
 ```markdown
 - [ ] Ich tanze Tango                      ← A1
@@ -189,6 +240,45 @@ Every question can have a `relevance` expression. Default is `1` (always show).
 | Combine multiple boxes | `"CODE_A1 == 'Y' or CODE_A2 == 'Y'"` |
 | Always show | `"1"` or omit field |
 | Never show (debug) | `"0"` |
+
+## Group-Level Config
+
+Group descriptions are plain text immediately after the `## Group Title` header.
+
+You can also attach a yaml block before the first `###` question:
+
+```markdown
+## Newsletter
+
+Only shown to subscribers.
+
+```yaml
+group_relevance: "NEWSLETTER_ABO == 'A1'"
+randomize_questions: false
+```
+```
+
+Currently supported group keys:
+- `group_relevance`
+- `randomize_questions`
+
+## Array Rows Syntax
+
+Selected array-style questions support a `Rows:` section for subquestions:
+
+```markdown
+### Please rate the following
+
+```yaml
+type: array_5point
+code: RATE_ITEMS
+```
+
+Rows:
+- [ ] Navigation
+- [ ] Search
+- [ ] Mobile usability
+```
 
 ---
 
@@ -269,6 +359,110 @@ PYTHONPATH=src uv run limesurvey api import-lss /tmp/output.lss
 ```
 
 Requires an active 1Password session (`op whoami` to verify, `eval $(op signin)` to authenticate).
+
+### Create a new survey
+
+```bash
+# Create with default settings (German, group-by-group)
+PYTHONPATH=src uv run limesurvey api create-survey "Community Feedback 2026"
+
+# Custom language and format
+PYTHONPATH=src uv run limesurvey api create-survey "Quick Poll" --language en --survey-format S
+```
+
+### Delete a survey
+
+```bash
+# With confirmation prompt
+PYTHONPATH=src uv run limesurvey api delete-survey 123456
+
+# Skip confirmation
+PYTHONPATH=src uv run limesurvey api delete-survey 123456 --yes
+```
+
+### Activate a survey
+
+Activating a survey starts response collection. Structure changes are disabled after activation.
+
+```bash
+PYTHONPATH=src uv run limesurvey api activate 123456 --yes
+```
+
+### Copy a survey
+
+```bash
+PYTHONPATH=src uv run limesurvey api copy-survey 123456 "Survey Copy 2026"
+```
+
+### Update survey properties
+
+```bash
+# Single property
+PYTHONPATH=src uv run limesurvey api update-survey 123456 --property admin=admin@example.com
+
+# Multiple properties
+PYTHONPATH=src uv run limesurvey api update-survey 123456 \
+  --property admin=admin@example.com \
+  --property format=S
+
+# From JSON file
+PYTHONPATH=src uv run limesurvey api update-survey 123456 --properties-file props.json
+```
+
+### Export a survey
+
+```bash
+# Export to default file (survey_123456.lss in current directory)
+PYTHONPATH=src uv run limesurvey api export 123456
+
+# Export to specific file
+PYTHONPATH=src uv run limesurvey api export 123456 -o /tmp/backup.lss
+```
+
+### Create a question group
+
+```bash
+PYTHONPATH=src uv run limesurvey api create-group 123456 "Demographics" --description "Basic info"
+```
+
+### List question groups
+
+```bash
+PYTHONPATH=src uv run limesurvey api list-groups 123456
+```
+
+### Add participants
+
+```bash
+# From JSON file
+PYTHONPATH=src uv run limesurvey api add-participants 123456 -f participants.json
+
+# Inline JSON
+PYTHONPATH=src uv run limesurvey api add-participants 123456 \
+  -i '[{"email":"test@example.com","firstname":"Test","lastname":"User"}]'
+
+# Add and send invitations immediately
+PYTHONPATH=src uv run limesurvey api add-participants 123456 -f list.json --send-invitation
+```
+
+### Invite participants
+
+```bash
+# Invite all uninvited participants
+PYTHONPATH=src uv run limesurvey api invite-participants 123456 --yes
+
+# Invite specific tokens
+PYTHONPATH=src uv run limesurvey api invite-participants 123456 --token abc123 --token def456 --yes
+```
+
+### List participants
+
+```bash
+PYTHONPATH=src uv run limesurvey api list-participants 123456
+
+# Only show who hasn't completed
+PYTHONPATH=src uv run limesurvey api list-participants 123456 --unused-only
+```
 
 ---
 

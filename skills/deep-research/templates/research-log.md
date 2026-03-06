@@ -32,6 +32,21 @@ Every research session MUST explore all five dimensions. Track coverage here.
 
 ---
 
+## Pre-Flight: Existing Bookmarks
+
+**Status**: {{pending/completed}}
+**Bookmark count**: {{N}} relevant bookmarks found
+
+Raindrop bookmarks searched before pipeline start. These are pre-existing curated sources that seed Tier 1.
+
+| # | Title | URL | Tags | Excerpt | Priority |
+|---|-------|-----|------|---------|---------|
+| 1 | {{title}} | {{url}} | {{tags}} | {{excerpt}} | {{high/normal — high if aic-processed or has ZK link}} |
+
+**Notes**: {{any observations about bookmark coverage, gaps, or already-vetted items}}
+
+---
+
 ## Tier 1: GATHER
 
 **Status**: pending

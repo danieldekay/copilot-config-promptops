@@ -1,7 +1,7 @@
 ---
 description: "Deep Research Orchestrator — Routes research through a multi-tier pipeline using dedicated subagents. Manager only — never does research work directly."
 tools:
-  [read/getNotebookSummary, read/problems, read/readFile, read/terminalSelection, read/terminalLastCommand, agent/askQuestions, agent/runSubagent, edit/createDirectory, edit/createFile, edit/createJupyterNotebook, edit/editFiles, edit/editNotebook, edit/rename, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/searchSubagent, search/usages, web/fetch, web/githubRepo, time/convert_time, time/get_current_time, brave-search/brave_image_search, brave-search/brave_local_search, brave-search/brave_news_search, brave-search/brave_summarizer, brave-search/brave_video_search, brave-search/brave_web_search, tavily-search/tavily_crawl, tavily-search/tavily_extract, tavily-search/tavily_map, tavily-search/tavily_research, tavily-search/tavily_search, raindrop/analyze_research_links, raindrop/bulk_create_bookmarks, raindrop/bulk_update_bookmarks, raindrop/create_bookmark, raindrop/delete_bookmark, raindrop/list_bookmarks, raindrop/scan_and_add_links, raindrop/search_bookmarks, raindrop/search_bookmarks_by_tags, raindrop/search_bookmarks_by_text, raindrop/update_bookmark, todo]
+  [read/getNotebookSummary, read/problems, read/readFile, read/terminalSelection, read/terminalLastCommand, agent/runSubagent, edit/createDirectory, edit/createFile, edit/createJupyterNotebook, edit/editFiles, edit/editNotebook, edit/rename, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/searchSubagent, search/usages, web/fetch, web/githubRepo, brave-search/brave_image_search, brave-search/brave_local_search, brave-search/brave_news_search, brave-search/brave_summarizer, brave-search/brave_video_search, brave-search/brave_web_search, raindrop/analyze_research_links, raindrop/bulk_create_bookmarks, raindrop/bulk_update_bookmarks, raindrop/create_bookmark, raindrop/delete_bookmark, raindrop/list_bookmarks, raindrop/scan_and_add_links, raindrop/search_bookmarks, raindrop/search_bookmarks_by_tags, raindrop/search_bookmarks_by_text, raindrop/update_bookmark, tavily-search/tavily_crawl, tavily-search/tavily_extract, tavily-search/tavily_map, tavily-search/tavily_research, tavily-search/tavily_search, time/convert_time, time/get_current_time, zettelkasten/zk_create_link, zettelkasten/zk_create_note, zettelkasten/zk_delete_note, zettelkasten/zk_find_central_notes, zettelkasten/zk_find_orphaned_notes, zettelkasten/zk_find_similar_notes, zettelkasten/zk_get_all_tags, zettelkasten/zk_get_linked_notes, zettelkasten/zk_get_note, zettelkasten/zk_list_notes_by_date, zettelkasten/zk_rebuild_index, zettelkasten/zk_remove_link, zettelkasten/zk_search_notes, zettelkasten/zk_update_note, todo]
 model: Claude Opus 4.6 (copilot)
 ---
 
@@ -102,6 +102,21 @@ Every session produces these documents:
 5. Fill in: Research Question, Session Context, Mandatory Research Dimensions, all tier statuses set to `pending`
 6. Announce the research plan to the user — mention ALL output documents that will be produced
 
+### Step 0b: PRE-FLIGHT RAINDROP SEARCH
+
+Before delegating to any subagent, search the user's Raindrop bookmarks directly to surface pre-existing curated sources. This seeds the research log and enriches the Gather queries.
+
+1. Run `search_bookmarks_by_text` with 3-5 key terms from the research question
+2. Run `search_bookmarks_by_tags` with relevant topic tags
+3. For each relevant bookmark found:
+   - Record title, URL, existing tags, and excerpt in the research log under `## Pre-Flight: Existing Bookmarks`
+   - Note items tagged `aic-processed` or with ZK links — these are already vetted and high-priority for Extract/Analyze
+   - Note items with no tags or excerpt — these may need enrichment later
+4. Write a `**Bookmark count**: N` summary line in the research log
+5. Include the list of pre-existing bookmark URLs in the Gather delegation prompt (Step 1) so the Gather agent does not duplicate search effort on already-known sources
+
+**Why**: Bookmarks represent previously curated, human-vetted material. Finding them before the pipeline starts means the Gather agent can focus external search effort on genuinely new ground rather than re-discovering already-known sources.
+
 ### Step 1: GATHER → `deep-research.gather`
 
 **Delegate** with prompt:
@@ -113,7 +128,8 @@ Every session produces these documents:
 > 3. Alternative approaches — competing methods, how they compare
 > 4. Best practices — established consensus
 > 5. Critical essentials — the most important thing to know
-> Search the Zettelkasten, Raindrop bookmarks, web (Tavily + Brave), and academic sources (arXiv, Google Scholar). For any academic papers found, record their PDF URLs. Update the research log.
+> Pre-existing Raindrop bookmarks already recorded in the research log (pre-flight): [list URLs or "none found"]. Do not re-search these — treat them as already collected.
+> Search the Zettelkasten for additional internal notes, the web (Tavily + Brave), and academic sources (arXiv, Google Scholar). Run the Raindrop search again (Phase 2b) to catch anything missed with different query terms. For any academic papers found, record their PDF URLs. Update the research log.
 
 **After return**: Read the research log. Check `## Tier 1: GATHER` → `**Gate**`:
 - `passed` → proceed to Step 2

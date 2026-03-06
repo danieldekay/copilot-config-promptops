@@ -18,3 +18,15 @@ applyTo: '**/*'
 4. Keep server-side `permission_callback` unchanged as the authoritative check.
 
 **Key insight**: Always distinguish _authentication_ (is the user logged in with a valid nonce?) from _authorization_ (does the user have the required capability?). The `rest_forbidden` code is used for both, but the fix is very different.
+
+### LimeSurvey relevance on `multiple_choice`
+
+**Pattern**: A follow-up question never appears (or always appears) when `relevance` checks a **multiple choice** question like `ROLLE == 'A1'`.
+
+**Cause**: In LimeSurvey ExpressionScript, checkbox questions don't have a single scalar value. Each checkbox is exposed as its own variable (usually `QUESTIONCODE_ANSWERCODE`).
+
+**Fix**:
+- For `single_choice`: use `NEWSLETTER_ABO == 'A1'`
+- For `multiple_choice`: use `ROLLE_A1 == 'Y'` (and combine with `or` as needed)
+
+**Key insight**: Treat `multiple_choice` relevance as “which boxes are ticked?”, not “what value did the question return?”.

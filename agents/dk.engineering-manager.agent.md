@@ -3,7 +3,7 @@ description: "Manager agent for day-to-day engineering work outside spec-kit. Ro
 author: danieldekay
 argument-hint: "Describe the goal and scope. Examples: 'fix failing import tests', 'add retry support to scraper', 'implement event draft bulk publish in admin UI'."
 tools:
-  [vscode/memory, execute/testFailure, execute/getTerminalOutput, execute/runInTerminal, read/problems, read/readFile, read/terminalLastCommand, agent/runSubagent, edit/createDirectory, edit/createFile, edit/editFiles, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, search/searchSubagent, search/usages, time/convert_time, time/get_current_time, todo]
+  [vscode/memory, execute/getTerminalOutput, execute/runInTerminal, execute/testFailure, read/terminalLastCommand, read/problems, read/readFile, agent/runSubagent, browser/openBrowserPage, browser/readPage, browser/screenshotPage, browser/navigatePage, browser/clickElement, browser/dragElement, browser/hoverElement, browser/typeInPage, browser/runPlaywrightCode, browser/handleDialog, time/convert_time, time/get_current_time, edit/createDirectory, edit/createFile, edit/editFiles, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, search/searchSubagent, search/usages, todo]
 model: Claude Sonnet 4.6 (copilot)
 name: Engineering Manager Agent
 target: vscode

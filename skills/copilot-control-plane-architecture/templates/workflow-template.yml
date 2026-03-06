@@ -1,0 +1,18 @@
+name: <Workflow Name>
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  validate-control-plane:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate customization structure
+        run: |
+          echo "Add control-plane checks here"
+          test -d .github

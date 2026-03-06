@@ -1,0 +1,228 @@
+# Modular Deep Research Agent — Configuration Manifest v2
+# ======================================================
+
+pipeline:
+  phases:
+    - id: gather
+      name: "Parallel Gather"
+      description: "Dispatch parallel search tracks across configured sources"
+      parallel: true
+      gate: gate_1
+
+    - id: process
+      name: "Process & Triage"
+      description: "Deduplicate, quality-rate, split into source sub-artifacts"
+      parallel: false
+      gate: gate_2
+
+    - id: extract
+      name: "Extract & Deep Read"
+      description: "Per-source structured extraction and PDF analysis"
+      parallel: false
+      gate: gate_3
+
+    - id: evaluate
+      name: "Evaluate & Cite"
+      description: "Evidence evaluation, fact-checking, citation management (parallel)"
+      parallel: true
+      gate: gate_4
+
+    - id: synthesize
+      name: "Synthesize"
+      description: "Brief, narrative, forward-looking artifacts"
+      parallel: false
+      gate: gate_5
+
+    - id: capture
+      name: "Knowledge Capture"
+      description: "Persist to knowledge DB and bookmark service (parallel)"
+      parallel: true
+      gate: null
+
+gates:
+  gate_1:
+    name: "Source Sufficiency"
+    criteria:
+      min_sources: 15
+      min_source_categories: 3
+      all_dimensions_covered: true
+    on_fail: retry_gather
+    max_retries: 2
+
+  gate_2:
+    name: "Source Quality"
+    criteria:
+      source_register_complete: true
+      min_tier_1_2_sources: 3
+      duplicates_removed: true
+    on_fail: retry_process
+    max_retries: 1
+
+  gate_3:
+    name: "Extraction Completeness"
+    criteria:
+      all_tier_1_3_sources_extracted: true
+      pdfs_analyzed: true
+    on_fail: retry_extract
+    max_retries: 1
+
+  gate_4:
+    name: "Evaluation Completeness"
+    criteria:
+      claims_map_created: true
+      citations_generated: true
+      fact_check_verdicts_present: true
+      contradictions_identified: true
+    on_fail: warn_and_continue
+    max_retries: 0
+
+  gate_5:
+    name: "Output Completeness"
+    criteria:
+      required_artifacts:
+        - brief
+        - evidence/claims-map
+        - forward/open-questions
+        - forward/hypotheses
+        - forward/further-research
+        - manifest
+      narrative_has_inline_citations: true
+    on_fail: retry_synthesize
+    max_retries: 1
+
+dimensions:
+  required:
+    - id: historical
+      name: "Historical Context"
+      description: "How did we get here? Evolution and timeline."
+    - id: current_state
+      name: "Current State of the Art"
+      description: "What works today? Leading approaches and tools."
+    - id: stakeholders
+      name: "Key Players & Stakeholders"
+      description: "Who is involved? Organizations, researchers, communities."
+    - id: challenges
+      name: "Challenges & Limitations"
+      description: "What doesn't work? Open problems and constraints."
+    - id: future
+      name: "Future Directions"
+      description: "Where is this going? Trends and predictions."
+
+plugins:
+  search_web:
+    provider: tavily
+    enabled: true
+    config:
+      queries_per_session: 15-20
+      search_depth: advanced
+      include_domains: []
+      exclude_domains: []
+
+  search_scholar:
+    provider: semantic_scholar
+    enabled: true
+    config:
+      max_results_per_query: 20
+      fields: "title,abstract,authors,year,citationCount,externalIds,openAccessPdf"
+      min_citation_count: 10
+      year_range: [2022, 2026]
+
+  search_codebase:
+    provider: vscode_workspace
+    enabled: true
+    config:
+      search_tools: [semantic_search, grep_search, file_search]
+      max_files_per_query: 20
+
+  search_knowledge_db:
+    provider: zettelkasten
+    enabled: true
+    config:
+      mcp_server: "#zettelkasten"
+      tools:
+        search: zk_search_notes
+        get: zk_get_note
+        linked: zk_get_linked_notes
+        tags: zk_get_all_tags
+        create: zk_create_note
+        link: zk_create_link
+      traversal_depth: 2
+
+  search_bookmarks:
+    provider: raindrop
+    enabled: true
+    config:
+      mcp_server: "#raindrop"
+      tools:
+        search: mcp_raindrop_search_bookmarks
+        collections: mcp_raindrop_get_collections
+        create: mcp_raindrop_create_bookmarks
+
+  pdf_processor:
+    provider: built_in
+    enabled: true
+    config:
+      download_sources: [arxiv, unpaywall, semantic_scholar]
+      reading_methods:
+        - keshav_three_pass
+        - five_cs
+        - pacheco_vega_aic
+
+  diagram_generator:
+    provider: mermaid
+    enabled: true
+    config:
+      direction: TB
+      # draw.io is optional — only generated on explicit user request
+      drawio_on_request: true
+
+  knowledge_capture:
+    provider: zettelkasten
+    enabled: true
+    config:
+      note_types:
+        findings: permanent
+        sources: literature
+        quick_ideas: fleeting
+        topic_maps: structure
+        major_themes: hub
+      link_types:
+        [extends, refines, contradicts, supports, questions, reference]
+
+  bookmark_save:
+    provider: raindrop
+    enabled: true
+    config:
+      auto_bookmark_tier: 3
+      collection: "Research"
+      enrich_with_knowledge_ids: true
+
+  citation_manager:
+    provider: built_in
+    enabled: true
+    config:
+      format: bibtex
+      output_file: citations.bib
+      auto_doi_lookup: true
+      citekey_format: "{author}{year}{keyword}"
+
+models:
+  orchestrator: claude-sonnet
+  gather_tracks: claude-haiku
+  process: claude-haiku
+  extract: claude-sonnet
+  evaluate_evidence: claude-opus
+  evaluate_factcheck: claude-sonnet
+  cite: gemini-flash
+  synthesize_brief: claude-sonnet
+  synthesize_narrative: claude-sonnet
+  synthesize_forward: claude-sonnet
+  knowledge_capture: claude-haiku
+  bookmark_save: claude-haiku
+
+session:
+  output_dir: "notes/research/{date}-{slug}/"
+  state_file: state.md
+  log_file: log.md
+  max_total_tokens: 500000
+  timeout_minutes: 60

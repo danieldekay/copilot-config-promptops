@@ -18,7 +18,7 @@ You **MUST** consider the user input before proceeding (if not empty). The user 
 
 ## Goal
 
-Bridge the gap between planning documents (user stories in `pm/user-stories/`) and implementation artifacts (specs in `rotf_qca/specs/`) by managing their ADO work item lifecycle. This agent ensures:
+Bridge the gap between planning documents (user stories in `pm/user-stories/`) and implementation artifacts (specs in `rotf_wfe/specs/`) by managing their ADO work item lifecycle. This agent ensures:
 
 1. Every user story has a valid ADO User Story work item ID
 2. Specs under a user story are tracked as ADO Tasks (children of the User Story)
@@ -274,7 +274,7 @@ ado_user_story_url: "https://dev.azure.com/rgqds/Team%20Excalibur/_backlogs/back
 - **Read-only default** — `check` never modifies anything. `update` and `create-spec` modify ADO and documents.
 - **Fail gracefully** — if ADO MCP tools fail (auth, network, API errors), report the error clearly and stop. Never retry ADO operations silently.
 - **Preserve frontmatter** — when editing YAML frontmatter, preserve all existing fields. Only update the specific fields being changed.
-- **Cross-workspace awareness** — user story docs live in `pm/user-stories/`, specs live in `rotf_qca/specs/`. Use absolute paths when needed.
+- **Cross-workspace awareness** — user story docs live in `pm/user-stories/`, specs live in `rotf_wfe/specs/`. Use absolute paths when needed.
 
 ## Command Quick Reference
 

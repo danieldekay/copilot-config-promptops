@@ -2,53 +2,10 @@
 description: "Commit staged or changed code after running a code review first. Delegates to the dk.dk.dk.code-review agent as a subagent, then optionally to dk.dk.dk.code-fix agent if issues are found. Creates conventional commits in semantic/logical groups."
 author: danieldekay
 tools:
-  [
-    vscode/getProjectSetupInfo,
-    vscode/installExtension,
-    vscode/newWorkspace,
-    vscode/openSimpleBrowser,
-    vscode/runCommand,
-    vscode/askQuestions,
-    vscode/vscodeAPI,
-    vscode/extensions,
-    execute/runNotebookCell,
-    execute/testFailure,
-    execute/getTerminalOutput,
-    execute/awaitTerminal,
-    execute/killTerminal,
-    execute/createAndRunTask,
-    execute/runInTerminal,
-    execute/runTests,
-    read/getNotebookSummary,
-    read/problems,
-    read/readFile,
-    read/terminalSelection,
-    read/terminalLastCommand,
-    agent/runSubagent,
-    edit/createDirectory,
-    edit/createFile,
-    edit/editFiles,
-    edit/replaceStringInFile,
-    edit/multiReplaceStringInFile,
-    search/changes,
-    search/codebase,
-    search/fileSearch,
-    search/listDirectory,
-    search/searchResults,
-    search/textSearch,
-    search/usages,
-    search/searchSubagent,
-    gitkraken/git_add_or_commit,
-    gitkraken/git_blame,
-    gitkraken/git_branch,
-    gitkraken/git_checkout,
-    gitkraken/git_log_or_diff,
-    gitkraken/git_push,
-    gitkraken/git_stash,
-    gitkraken/git_status,
-    todo,
-  ]
-agents: [dk.dk.dk.code-review, dk.dk.dk.code-fix]
+  [vscode/extensions, vscode/askQuestions, vscode/getProjectSetupInfo, vscode/installExtension, vscode/newWorkspace, vscode/runCommand, vscode/vscodeAPI, execute/getTerminalOutput, execute/awaitTerminal, execute/killTerminal, execute/createAndRunTask, execute/runInTerminal, execute/runTests, execute/runNotebookCell, execute/testFailure, read/terminalSelection, read/terminalLastCommand, read/getNotebookSummary, read/problems, read/readFile, agent/runSubagent, edit/createDirectory, edit/createFile, edit/editFiles, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/searchResults, search/textSearch, search/usages, todo]
+agents: 
+  - WFE - Code Review Agent
+  - WFE - Code Fix Agent
 model: Claude Sonnet 4.5 (copilot)
 name: Commit Agent
 target: vscode

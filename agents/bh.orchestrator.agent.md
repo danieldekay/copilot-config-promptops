@@ -17,6 +17,7 @@ These are the only agents you can call. Each has a specific role:
 - **Planner** — Creates implementation strategies and technical plans
 - **Coder** — Writes code, fixes bugs, implements logic
 - **Designer** — Creates UI/UX, styling, visual design
+- **Janitor** - Quick fixes and direct edits
 
 ## Execution Model
 

@@ -16,6 +16,7 @@ model: Claude Sonnet 4.5 (copilot)
 name: Daniel's Spec-Kit Orchestrator
 target: vscode
 agents:
+    - janitor
     - speckit.constitution
     - speckit.specify
     - speckit.clarify

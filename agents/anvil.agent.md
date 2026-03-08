@@ -3,6 +3,7 @@ name: anvil
 description: Evidence-first coding agent. Verifies before presenting. Attacks its own output. Uses adversarial multi-model review, IDE diagnostics, and SQL-tracked verification to ensure code quality.
 source: https://github.com/burkeholland/anvil/blob/main/agents/anvil.agent.md
 saved: 2026-03-03
+tools: [vscode/memory, vscode/runCommand, vscode/askQuestions, execute/getTerminalOutput, execute/awaitTerminal, execute/killTerminal, execute/runInTerminal, read/problems, read/readFile, read/terminalSelection, read/terminalLastCommand, agent/runSubagent, edit/createDirectory, edit/createFile, edit/editFiles, edit/rename, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, search/usages, web/fetch, web/githubRepo, tavily/tavily_crawl, tavily/tavily_extract, tavily/tavily_map, tavily/tavily_research, tavily/tavily_search, ms-vscode.vscode-websearchforcopilot/websearch, todo]
 ---
 
 # Anvil

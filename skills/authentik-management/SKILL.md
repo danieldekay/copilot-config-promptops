@@ -1,6 +1,6 @@
 ---
 name: authentik-management
-description: Comprehensive management of Authentik 2025.12.3 identity provider — deployment, configuration, user/application management, backup/restore, monitoring, and troubleshooting. Use when deploying Authentik via Ansible, configuring SSO/OAuth2/OIDC, managing users/groups/applications, implementing backup strategies, monitoring service health, or troubleshooting authentication issues.
+description: Use when deploying or operating self-hosted Authentik as infrastructure, especially through Ansible playbooks, Docker Compose, Traefik, PostgreSQL, Redis, backups, upgrades, outposts, and production service validation. Prefer this skill when the user wants to build or run Authentik automation on servers, template compose or env files, manage host-level integrations, or handle operational changes beyond documentation lookup.
 ---
 
 # Authentik Identity Provider Management
@@ -8,6 +8,10 @@ description: Comprehensive management of Authentik 2025.12.3 identity provider �
 ## Overview
 
 Authentik is a modern identity and access management platform providing single sign-on (SSO), OAuth2/OIDC provider capabilities, LDAP integration, and flexible authentication flows. This skill covers complete lifecycle management of Authentik 2025.12.3 in production Docker environments.
+
+This is the infrastructure-and-operations skill for Authentik. Use it for deployment, playbooks, runtime topology, secrets, health checks, backup, restore, upgrades, and production operations.
+
+If the task is primarily about reading the upstream community documentation correctly, choosing the right blueprint pattern, or staying inside the Authentik OSS docs model, also load [../authentik-open-source/SKILL.md](../authentik-open-source/SKILL.md).
 
 ## When to Use
 
@@ -939,6 +943,82 @@ Network Security:
 - [ ] Admin interface restricted to VPN/whitelist
 - [ ] Database encrypted at rest (LUKS volume)
 - [ ] TLS 1.3 enforced, older protocols disabled
+
+## Blueprint Apply Without Filesystem Access
+
+The `/blueprints/custom` bind-mount on the Authentik worker container is read-only (`ro`). The `apply_blueprint` management command validates paths against allowed directories and rejects `/tmp/`. When you cannot write to the blueprints mount (e.g., Ansible manages the host filesystem with `ro` mounts), use the Django Importer directly.
+
+### Python script workaround
+
+Write this script to `/tmp/ak_apply_blueprint.py` inside the worker container, then pipe blueprint YAML to it:
+
+```python
+#!/usr/bin/env python3
+import sys, os
+sys.path.insert(0, '/')  # manage.py at /, authentik package at /authentik/
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
+import django
+django.setup()
+from authentik.blueprints.v1.importer import Importer
+blueprint_yaml = sys.stdin.read()
+importer = Importer.from_string(blueprint_yaml)
+result = importer.validate()
+print(f"Validate: {result}")
+apply_result = importer.apply()
+print(f"Blueprint applied successfully: {apply_result.success}")
+```
+
+Apply a blueprint:
+
+```bash
+# Deploy the script once
+cat /tmp/ak_apply_blueprint.py | ssh user@host \
+  "docker exec -i authentik-worker sh -c 'cat > /tmp/ak_apply_blueprint.py'"
+
+# Strip Jinja2 raw/endraw wrappers from .j2 templates, then pipe blueprint YAML
+python3 -c "
+import re, sys
+t = open('path/to/blueprint.yaml.j2').read()
+t = re.sub(r'\{%-?\s*raw\s*-?%\}\n?', '', t)
+t = re.sub(r'\{%-?\s*endraw\s*-?%\}\n?', '', t)
+sys.stdout.write(t)
+" | ssh user@host "docker exec -i authentik-worker python3 /tmp/ak_apply_blueprint.py"
+```
+
+Key notes:
+- `sys.path.insert(0, '/')` is required — `manage.py` lives at `/`, the `authentik` package at `/authentik/`.
+- This approach bypasses API token auth entirely — useful when bootstrap tokens have expired.
+- The script is idempotent in the same way Authentik blueprints are: existing objects are updated, not duplicated.
+
+### Deploying files through read-only mounts
+
+For email templates or other files on volumes with `rw` mounts (e.g., `/templates` on the server container):
+
+```bash
+cat local-file.html | ssh user@host \
+  "docker exec -i authentik-server sh -c 'cat > /templates/email/filename.html'"
+```
+
+### Redis cache flush after blueprint changes
+
+Flow and policy data is cached in Redis. After applying a blueprint that modifies flows, stages, or policies, flush the cache:
+
+```bash
+docker exec authentik-redis redis-cli FLUSHDB
+```
+
+### API Token Management
+
+The bootstrap token (`AUTHENTIK_BOOTSTRAP_TOKEN`) has a default expiry (~30 days). To find a valid permanent token:
+
+```bash
+# Substitute the actual user_id (akadmin is typically 1 or 6)
+docker exec authentik-postgres psql -U authentik -A -t -c \
+  "SELECT key, intent, expires FROM authentik_core_token
+   WHERE user_id = <uid> AND (expires IS NULL OR expires > NOW());"
+```
+
+If no permanent token exists, create one in the Admin UI: Admin Interface → Directory → Tokens → Create, or use the Django shell via `docker exec -it authentik-server python3 /manage.py shell`.
 
 ## Quick Reference Commands
 

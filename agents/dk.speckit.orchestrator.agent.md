@@ -1,5 +1,5 @@
 ---
-description: Orchestrate the spec-kit workflow by analyzing current state, enforcing artifact gates, and routing to appropriate spec-kit commands. Strictly read-only analysis and routing agent.
+description: "Anvil-enhanced spec-kit orchestrator — analyzes workflow state, enforces artifact gates (including evidence-ledger), routes to dk.speckit.* agents with pushback awareness. Read-only analysis and routing."
 author: danieldekay
 argument-hint: (Optional) Describe your intent or provide context about where you are in the workflow.
 tools:
@@ -23,9 +23,9 @@ agents:
   - speckit.specify
   - speckit.clarify
   - speckit.plan
-  - speckit.tasks
+  - dk.speckit.tasks
   - speckit.analyze
-  - speckit.implement
+  - dk.speckit.implement
   - Code Review Agent
   - Code Fix Agent
   - Commit Agent
@@ -48,16 +48,16 @@ handoffs:
     prompt: Generate technical design artifacts
     send: true
   - label: Generate Tasks
-    agent: speckit.tasks
-    prompt: Create dependency-ordered implementation tasks
+    agent: dk.speckit.tasks
+    prompt: Create dependency-ordered, risk-classified (🟢🟡🔴) implementation tasks with S/M/L sizing and verification strategy
     send: true
   - label: Analyze Artifacts
     agent: speckit.analyze
     prompt: Audit cross-artifact consistency
     send: true
   - label: Implement Feature
-    agent: speckit.implement
-    prompt: Execute implementation from tasks
+    agent: dk.speckit.implement
+    prompt: Execute Anvil-enhanced implementation from tasks. Apply risk-scaled verification, log evidence to ledger, push back via askQuestions if conflicts or reuse opportunities found.
     send: true
   - label: Run Code Review
     agent: Code Review Agent
@@ -76,6 +76,12 @@ handoffs:
     prompt: Run browser-based tests to verify the implemented feature in the local dev environment. Return a structured PASS/FAIL/WARN test report.
     send: true
 ---
+
+## Skill References
+
+Before routing, read the following from `skills/dk-flavored-spec-kit/references/`:
+- **`pushback-protocol.md`** — for understanding pushback triage (implement → orchestrator flow)
+- **`artifact-registry.md`** — for artifact gate awareness including `evidence-ledger.json`
 
 ## User Input
 
@@ -162,9 +168,15 @@ Use the #time tool to track also the time yozr subagents need for a delegation, 
 
 **IMPORTANT**: Sub-agents (especially `speckit.implement`) often cannot complete all tasks in a single run due to context limits or complexity.
 
-- **Expect Multiple Runs**: Be prepared to delegate to `speckit.implement` multiple times until 100% completion.
+- **Expect Multiple Runs**: Be prepared to delegate to `dk.speckit.implement` multiple times until 100% completion.
 - **Verify Progress**: After an agent returns, check `tasks.md` status again.
 - **Re-Delegate**: If tasks remain (Status < 100%), send the agent back to work immediately.
+- **Pushback Handling**: `dk.speckit.implement` may use `askQuestions` to push back. Triage pushbacks:
+  - **Implementation choice** → approve if sensible, override if not
+  - **Requirement gap** → escalate to user or route to `speckit.clarify`
+  - **Architecture question** → route to `speckit.plan` for amendment
+  - **Safety concern** → always escalate to user
+- **Evidence Verification**: After implementation completes, verify `evidence-ledger.json` exists in the spec directory. If missing, note as a concern in the status report.
 
 ## Managerial Responsibility & Quality Assurance
 
@@ -238,9 +250,9 @@ Check artifact existence in feature dir:
 |:------------------|:---------------|:-------------|:--------------------------------------|
 | **Pre-Specify**   | None           | N/A          | → `speckit.specify`                   |
 | **Post-Specify**  | `spec.md`      | N/A          | → `speckit.plan`                      |
-| **Post-Plan**     | + `plan.md`    | N/A          | → `speckit.tasks`                     |
-| **Pre-Implement** | + `tasks.md`   | 0%           | → `speckit.implement`                 |
-| **Implementing**  | All Docs       | 1-99%        | → `speckit.implement` (Repeat needed) |
+| **Post-Plan**     | + `plan.md`    | N/A          | → `dk.speckit.tasks`                  |
+| **Pre-Implement** | + `tasks.md`   | 0%           | → `dk.speckit.implement`              |
+| **Implementing**  | All Docs       | 1-99%        | → `dk.speckit.implement` (Repeat)     |
 | **Pre-Review**    | All Docs       | 100%         | → **Run Code Review**                 |
 | **Review-Fix**    | `code-review/` | Issues found | → **Auto-Fix Issues**                 |
 | **Post-Review**   | `code-review/` | All Fixed    | → **Commit Changes**                  |
@@ -259,8 +271,8 @@ Check artifact existence in feature dir:
 3. **Spec missing?** → `speckit.specify`
 4. **Clarification needed?** → `speckit.clarify`
 5. **Plan missing?** → `speckit.plan`
-6. **Tasks missing?** → `speckit.tasks`
-7. **Tasks incomplete?** → `speckit.implement`
+6. **Tasks missing?** → `dk.speckit.tasks`
+7. **Tasks incomplete?** → `dk.speckit.implement`
 8. **Tasks 100% & No Review?** → `dk.code-review`
 9. **Tasks 100% & Referenced Review?** → `commit-agent`
 

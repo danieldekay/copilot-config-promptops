@@ -2,16 +2,7 @@
 description: Orchestrate the spec-kit workflow by analyzing current state, enforcing artifact gates, and routing to appropriate spec-kit commands. Strictly read-only analysis and routing agent.
 argument-hint: (Optional) Describe your intent or provide context about where you are in the workflow.
 tools:
-    [
-        execute/getTerminalOutput,
-        execute/runInTerminal,
-        read/readFile,
-        agent,
-        search,
-        "tavily/*",
-        "time/*",
-        todo,
-    ]
+    [vscode/memory, vscode/askQuestions, execute/getTerminalOutput, execute/runInTerminal, read/readFile, agent/runSubagent, search/changes, search/codebase, search/fileSearch, search/listDirectory, search/textSearch, search/searchSubagent, search/usages, time/convert_time, time/get_current_time, todo]
 model: Claude Sonnet 4.5 (copilot)
 name: Daniel's Spec-Kit Orchestrator
 target: vscode
@@ -25,6 +16,8 @@ agents:
     - speckit.checklist
     - speckit.analyze
     - speckit.implement
+    - dk.speckit.ux
+    - dk.speckit.ui
     - rotf.speckit.improve
     - rotf.speckit.review
     - rotf.speckit.fix
@@ -35,79 +28,6 @@ agents:
     - WFE - Code Review Agent
     - WFE - Code Fix Agent
     - WFE - Commit only after Code Review Agent
-handoffs:
-    - label: Create Constitution
-      agent: speckit.constitution
-      prompt: Create or update the project constitution
-      send: true
-    - label: Create Specification
-      agent: speckit.specify
-      prompt: Create a new feature specification
-      send: true
-    - label: Clarify Requirements
-      agent: speckit.clarify
-      prompt: Resolve high-impact ambiguities in the spec
-      send: true
-    - label: Create Technical Plan
-      agent: speckit.plan
-      prompt: Generate technical design artifacts
-      send: true
-    - label: Generate Tasks
-      agent: speckit.tasks
-      prompt: Create dependency-ordered implementation tasks
-      send: true
-    - label: Analyze Artifacts
-      agent: speckit.analyze
-      prompt: Audit cross-artifact consistency
-      send: true
-    - label: Implement Feature
-      agent: speckit.implement
-      prompt: Execute implementation from tasks
-      send: true
-    - label: Run Improvement Cycle
-      agent: rotf.speckit.improve
-      prompt: Run the full post-implementation improvement cycle (review → fix + quality → validate)
-      send: true
-    - label: Run Spec Code Review
-      agent: rotf.speckit.review
-      prompt: Perform structured code review for the active spec
-      send: true
-    - label: Fix & Refactor
-      agent: rotf.speckit.fix
-      prompt: Fix code review findings and refactor surrounding code
-      send: true
-    - label: Improve Quality
-      agent: rotf.speckit.quality
-      prompt: Improve test coverage and documentation
-      send: true
-    - label: Validate Spec
-      agent: speckit.validate
-      prompt: Run comprehensive spec validation
-      send: true
-    - label: Generate Checklist
-      agent: speckit.checklist
-      prompt: Generate a custom checklist for the current feature
-      send: true
-    - label: Finish Feature
-      agent: rotf.feature-finish
-      prompt: Run git-flow feature finish with quality gate
-      send: true
-    - label: Tasks to Issues
-      agent: speckit.taskstoissues
-      prompt: Convert tasks to tracking issues
-      send: true
-    - label: Run WFE Code Review
-      agent: WFE - Code Review Agent
-      prompt: Perform comprehensive code review of all changes
-      send: true
-    - label: Auto-Fix Issues
-      agent: WFE - Code Fix Agent
-      prompt: Automatically fix identified code issues
-      send: true
-    - label: Commit Changes
-      agent: WFE - Commit only after Code Review Agent
-      prompt: Commit changes with conventional commit message
-      send: true
 ---
 
 ## User Input
@@ -136,7 +56,7 @@ SPECIFICATION PHASE
   speckit.specify  →  speckit.clarify  →  speckit.plan
 
 PLANNING PHASE
-  speckit.tasks  →  (speckit.checklist)  →  speckit.analyze
+  dk.speckit.ux  →  speckit.tasks  →  (speckit.checklist)  →  speckit.analyze
 
 IMPLEMENTATION PHASE → iterate until done.
   speckit.implement
@@ -206,8 +126,9 @@ Check artifact existence in feature dir:
 
 1. `spec.md`
 2. `plan.md`
-3. `tasks.md`
-4. `code-review/` folder
+3. `ux-brief.md` (optional — only for UI-facing features)
+4. `tasks.md`
+5. `code-review/` folder
 
 **Calculate Task Status** (if `tasks.md` exists):
 
@@ -221,7 +142,8 @@ Check artifact existence in feature dir:
 | :--------------------- | :------------------ | :------------ | :------------------------------------------------------ |
 | **Pre-Specify**        | None                | N/A           | → `speckit.specify`                                     |
 | **Post-Specify**       | `spec.md`           | N/A           | → `speckit.plan`                                        |
-| **Post-Plan**          | + `plan.md`         | N/A           | → `speckit.tasks`                                       |
+| **Post-Plan**          | + `plan.md`         | N/A           | → `dk.speckit.ux` (if UI-facing) or `speckit.tasks`     |
+| **Post-UX**            | + `ux-brief.md`     | N/A           | → `speckit.tasks`                                       |
 | **Pre-Implement**      | + `tasks.md`        | 0%            | → `speckit.implement`                                   |
 | **Implementing**       | All Docs            | 1-99%         | → `speckit.implement` (Repeat needed)                   |
 | **Pre-Improvement**    | All Docs            | 100%          | → `rotf.speckit.improve`                                |
@@ -251,6 +173,7 @@ Check artifact existence in feature dir:
 3. **Spec missing?** → `speckit.specify`
 4. **Clarification needed?** → `speckit.clarify`
 5. **Plan missing?** → `speckit.plan`
+5b. **Plan exists, spec has UI user stories, no `ux-brief.md`?** → `dk.speckit.ux`
 6. **Tasks missing?** → `speckit.tasks`
 7. **Tasks incomplete (0-99%)?** → `speckit.implement`
 8. **Tasks 100% & No review artifacts?** → `rotf.speckit.improve` (or `rotf.speckit.review` for Phase 1 only)

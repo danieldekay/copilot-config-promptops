@@ -1,0 +1,3 @@
+# Exclude this entire repo from Foam indexing.
+# This folder is a config/experiments repo, not a notes workspace.
+**

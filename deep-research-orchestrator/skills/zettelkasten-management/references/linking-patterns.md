@@ -217,7 +217,7 @@ Track how understanding develops over time:
 v1: Initial Understanding
   ↑ refined_by
 v2: After encountering contradiction
-  ↑ refined_by  
+  ↑ refined_by
 v3: Integrated understanding
 ```
 
@@ -282,6 +282,6 @@ Consider creating explicit structure notes around these hubs.
 **Problem:** One "master note" connected to everything
 **Solution:** Break into structure notes. Create hierarchy of organization.
 
-### Orphan Accumulation  
+### Orphan Accumulation
 **Problem:** New notes created but never linked
 **Solution:** Enforce "minimum two links" rule. Weekly orphan review.

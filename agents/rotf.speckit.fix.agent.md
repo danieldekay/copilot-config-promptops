@@ -51,7 +51,7 @@ If no artifacts found, inform user and recommend running `rotf.speckit.review` f
 
 Read all available artifacts and extract:
 
-- **Issue ID**: e.g., `CR-001`, `TD-001`, `HI-003`
+- **Issue ID**: e.g., `FINDING SPEC-042 CR-001 OPEN`, `FINDING SPEC-042 TD-001 OPEN`
 - **Severity**: Critical / High / Medium / Low
 - **File**: Affected file path(s)
 - **Location**: Function/line description
@@ -131,126 +131,41 @@ If verification fails:
 
 ### 7. Update Spec Artifacts
 
-After all fixes are applied, update **both** tasks.md and code-review artifacts so progress is visible and auditable.
+After all fixes are applied, update **both** tasks.md and code-review artifacts. Follow the update protocol documented in each template's HTML comments.
 
 #### Update `FEATURE_DIR/tasks.md` — Add Improvement Phase
 
-Append a new phase to tasks.md for the fix work. Use the next available phase number and task IDs. Mark completed fixes with `[x]`, skipped fixes with `[ ]`:
+Append a new phase for the fix work. Use the next available phase number and `FX` task IDs:
 
-```markdown
----
-
-## Phase N: Improvement — Fix & Refactor (YYYY-MM-DD)
-
-**Purpose**: Code review fixes from improvement cycle
-**Agent**: rotf.speckit.fix
-
-- [x] FX001 [CR-001] Fix [title] in `path/to/file.py` ✅ YYYY-MM-DD
-- [x] FX002 [CR-003] Fix [title] in `path/to/file.py` ✅ YYYY-MM-DD
-- [x] FX003 [CR-007] Refactor [description] in `path/to/file.py` ✅ YYYY-MM-DD
-- [ ] FX004 [CR-005] (Skipped) [title] — [reason]
-```
+- Completed fixes: `- [x] FX001 [FIXED SPEC-NNN CR-001] Fix [title] in \`path/to/file.py\` ✅ YYYY-MM-DD`
+- Skipped fixes: `- [ ] FX004 [SKIPPED SPEC-NNN CR-005] [title] — [reason]`
 
 **Rules**:
 
 - Task IDs use `FX` prefix (FX001, FX002, ...) to distinguish from implementation tasks (T001, T002, ...)
-- Each task references the finding ID it resolves (e.g., `[CR-001]`)
+- Each task references the finding ID it resolves (e.g., `[FIXED SPEC-NNN CR-001]`)
 - Completed tasks include a timestamp
 - Skipped tasks include the reason
-- Also mark any new tasks discovered during fixing
 
-#### Update `FEATURE_DIR/code-review/findings.md` — Checkmark Resolved Findings
+#### Update `FEATURE_DIR/code-review/findings.md` — Mark Resolved Findings
 
-For **each** resolved finding in findings.md, add a `✅ FIXED` marker inline. Do NOT move or restructure the findings — mark them in-place so the history is preserved:
+Follow the update protocol in findings-template.md HTML comments:
 
-```markdown
-### [CR-001]: [Title] — ✅ FIXED (YYYY-MM-DD)
-
-- **File**: `path/to/file.py:L45-60`
-- **Category**: Architecture / Correctness / Security
-- **Finding**: [Description]
-- **Resolution**: [What was done to fix it, referencing FX task ID]
-```
-
-For table-format low-severity items, add a status column:
-
-```markdown
-| ID | File:Line | Finding | Suggestion | Status |
-|----|-----------|---------|------------|--------|
-| LO-001 | `file.py:L123` | [brief] | [brief] | ✅ Fixed |
-| LO-002 | `file.py:L456` | [brief] | [brief] | ⏭️ Skipped |
-```
-
-Also update `tech-debt.md` and `improvements.md` the same way — mark resolved items with `✅` inline.
-
-Prepend a summary section to findings.md:
-
-```markdown
-## Fix Status Update — YYYY-MM-DD
-
-**Agent**: rotf.speckit.fix
-**Summary**: X critical, Y high, Z medium fixed. N skipped. See FIX_REPORT.md for details.
-**Tasks added to tasks.md**: Phase N (FX001–FX00N)
-```
+- Change finding heading status: `OPEN` → `FIXED` or `SKIPPED`, append `— FX001 YYYY-MM-DD`
+- Add `- **Resolution**: [What was done]` below each fixed finding
+- For low-severity table items: add Status column with `✅ FX004` or `⏭️ [reason]`
+- Fill in the "Fix Status Update" section (Agent, Summary, Tasks ref)
+- Also update `tech-debt.md` and `improvements.md` — mark resolved items `✅` inline
 
 #### Create `FEATURE_DIR/code-review/FIX_REPORT.md`
 
-Detailed fix report:
+Initialize the template if it doesn't exist:
 
-```markdown
-# Fix Report — [spec name]
-
-**Date**: YYYY-MM-DD HH:MM
-**Agent**: rotf.speckit.fix
-
-## Artifacts Updated
-
-- `tasks.md`: Added Phase N (FX001–FX00N)
-- `findings.md`: N findings marked ✅ FIXED, N marked ⏭️ Skipped
-- `tech-debt.md`: N items marked ✅ resolved
-- `improvements.md`: N items marked ✅ done
-
-## Summary
-
-| Category | Reviewed | Fixed | Skipped |
-|----------|----------|-------|---------|
-| Critical | N | N | N |
-| High | N | N | N |
-| Medium | N | N | N |
-| Total | N | N | N |
-
-## Fixes Applied
-
-### [CR-001]: [Issue Title]
-
-- **File**: `path/to/file.py`
-- **Root Cause**: [Why it existed, not just what was wrong]
-- **Fix**: [What was changed and why]
-- **Refactoring**: [Any refactoring done as part of the fix]
-- **Test Added**: `tests/path/to/test_file.py::test_name`
-- **Verification**: Tests pass / Linter clean
-
-## Skipped Issues
-
-### [CR-005]: [Title]
-
-- **Reason**: [Why it couldn't be fixed]
-- **Recommendation**: [Next steps or manual intervention needed]
-
-## Refactoring Summary
-
-Files split or restructured during fixes:
-
-| Original | Action | Result |
-|----------|--------|--------|
-| `large_file.py` (450 LOC) | Extracted | `core.py` + `helpers.py` |
-
-## Patterns Documented
-
-Recurring patterns discovered and fixed:
-
-1. **[Pattern]**: [Description, where it was fixed, how to prevent recurrence]
+```bash
+.specify/scripts/bash/init-code-review.sh --fix
 ```
+
+Fill in `FIX_REPORT.md` following the template's HTML comments. The template contains all field definitions for: Summary table, TDD Compliance, FIXED entries (with Root Cause, Constitution Ref, Fix, Refactoring, Test Added), SKIPPED entries, Refactoring Summary, and Patterns Documented.
 
 ### 8. Run Full Test Suite
 

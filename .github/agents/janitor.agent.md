@@ -1,8 +1,53 @@
 ---
-description: 'Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation.'
-name: 'Universal Janitor'
-tools: [vscode/extensions, vscode/getProjectSetupInfo, vscode/installExtension, vscode/newWorkspace, vscode/runCommand, vscode/vscodeAPI, execute/getTerminalOutput, execute/runTask, execute/createAndRunTask, execute/runTests, execute/runInTerminal, execute/testFailure, execute/getTaskOutput, read/terminalSelection, read/terminalLastCommand, read/problems, read/readFile, 'github/*', edit/editFiles, search, web]
+description: "Perform janitorial tasks on any codebase including cleanup, simplification, and tech debt remediation."
+name: "Universal Janitor"
+tools:
+  [
+    vscode/extensions,
+    vscode/askQuestions,
+    vscode/installExtension,
+    vscode/memory,
+    vscode/newWorkspace,
+    vscode/resolveMemoryFileUri,
+    vscode/runCommand,
+    vscode/vscodeAPI,
+    vscode/toolSearch,
+    execute/getTerminalOutput,
+    execute/runTask,
+    execute/createAndRunTask,
+    execute/runTests,
+    execute/testFailure,
+    execute/runInTerminal,
+    read/terminalSelection,
+    read/terminalLastCommand,
+    read/problems,
+    read/readFile,
+    edit/createDirectory,
+    edit/createFile,
+    edit/editFiles,
+    edit/rename,
+    search/codebase,
+    search/fileSearch,
+    search/listDirectory,
+    search/textSearch,
+    search/usages,
+    web/fetch,
+    web/githubRepo,
+    web/githubTextSearch,
+    lean-ctx/ctx_call,
+    lean-ctx/ctx_edit,
+    lean-ctx/ctx_graph,
+    lean-ctx/ctx_knowledge,
+    lean-ctx/ctx_overview,
+    lean-ctx/ctx_read,
+    lean-ctx/ctx_search,
+    lean-ctx/ctx_session,
+    lean-ctx/ctx_shell,
+    lean-ctx/ctx_tree,
+    lean-ctx/ctx_provider,
+  ]
 ---
+
 # Universal Janitor
 
 Clean any codebase by eliminating tech debt. Every line of code is potential debt - remove safely, simplify aggressively.
